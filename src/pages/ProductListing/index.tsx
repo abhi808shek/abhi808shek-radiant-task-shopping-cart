@@ -1,18 +1,24 @@
 import ProductCard from "@/components/product-card";
 import { products } from "@/services/apis/products.api";
+import { hideLoader, showLoader } from "@/store/global.reducer";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const ProductListing = () => {
   const [productList, setProductList] = useState([]);
-
+  const dispatch = useDispatch();
   const onHandleProductList = async () => {
     try {
+      dispatch(showLoader());
       const result = await products();
       setProductList(result?.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch(hideLoader());
     }
   };
+
   useEffect(() => {
     onHandleProductList();
   }, []);
