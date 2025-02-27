@@ -80,9 +80,13 @@ const Cart = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 bg-gray-100 min-h-screen flex flex-col items-center">
+    <div
+      className={`p-4 md:p-6 bg-gray-100 flex flex-col items-center ${
+        !cart.length ? "justify-center" : ""
+      }`}
+    >
       {cart.length === 0 ? (
-        <div className="flex flex-col items-center">
+        <div className="flex min-h-screen flex-col items-center">
           <h2 className="text-2xl font-semibold text-gray-900">
             Your Cart is Empty
           </h2>
@@ -97,7 +101,7 @@ const Cart = () => {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full min-h-screen">
           <div className="lg:col-span-2 space-y-4">
             {cart.map((item) => (
               <Card
@@ -145,7 +149,7 @@ const Cart = () => {
           </div>
 
           {/* Order Summary */}
-          <Card className="p-4 bg-white shadow-md">
+          <Card className="p-4 bg-white shadow-md h-80">
             <h3 className="text-xl font-semibold text-gray-900">
               Order Summary
             </h3>
