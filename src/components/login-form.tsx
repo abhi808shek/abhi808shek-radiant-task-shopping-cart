@@ -19,38 +19,53 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
   const handleSubmit = async (
     event: FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
-    setError(null);
+    setEmailError(null);
+    setPasswordError(null);
 
-    if (!email.trim()) return setError("Email is required.");
-    if (!/\S+@\S+\.\S+/.test(email)) return setError("Enter a valid email.");
-    if (!password.trim()) return setError("Password is required.");
-    if (password.length < 6)
-      return setError("Password must be at least 6 characters.");
+    let hasError = false;
+
+    if (!email.trim()) {
+      setEmailError("Email is required.");
+      hasError = true;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Enter a valid email.");
+      hasError = true;
+    }
+
+    if (!password.trim()) {
+      setPasswordError("Password is required.");
+      hasError = true;
+    } else if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters.");
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     try {
       setLoading(true);
       const response = await login({ email, password });
 
       if (!response.data || !response.data.token) {
-        setError("Invalid email or password.");
+        setEmailError("Invalid email or password.");
         return;
       }
 
       const { token }: LoginResponse = response.data;
-      console.log("response ", response);
-
       customLocalStorage.setData("token", token);
       toast.success("Login successful!");
       navigate("/");
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setEmailError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -60,12 +75,13 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome To Radiant Infonet </CardTitle>
+          <CardTitle className="text-xl">Welcome To Radiant Infonet</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
               <div className="grid gap-6">
+                {/* Email Input */}
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -74,22 +90,29 @@ export function LoginForm({
                     placeholder="m@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className={emailError ? "border-red-500" : ""}
                   />
+                  {emailError && (
+                    <p className="text-red-500 text-sm">{emailError}</p>
+                  )}
                 </div>
+
+                {/* Password Input */}
                 <div className="grid gap-3">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
-                  </div>
+                  <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className={passwordError ? "border-red-500" : ""}
                   />
+                  {passwordError && (
+                    <p className="text-red-500 text-sm">{passwordError}</p>
+                  )}
                 </div>
 
-                {error && <p className="text-red-500 text-sm">{error}</p>}
-
+                {/* Submit Button */}
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Logging in..." : "Login"}
                 </Button>
