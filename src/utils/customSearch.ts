@@ -2,7 +2,6 @@ export type Order = {
   id: number;
   title: string;
   price: number;
-  quantity: number;
 };
 export const searchOrders = (orders: Order[], query: string): Order[] => {
   if (!query.trim()) return orders;
