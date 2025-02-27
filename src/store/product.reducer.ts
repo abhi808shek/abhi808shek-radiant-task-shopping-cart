@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface Product {
+export interface Product {
   id: number;
   title: string;
   price: number;
@@ -10,10 +10,12 @@ interface Product {
 
 interface ProductState {
   productsList: Product[];
+  searchResults: Product[];
 }
 
 const initialState: ProductState = {
   productsList: [],
+  searchResults: [],
 };
 
 export const productSlice = createSlice({
@@ -23,9 +25,12 @@ export const productSlice = createSlice({
     setProducts: (state, action: PayloadAction<Product[]>) => {
       return { ...state, productsList: action.payload };
     },
+    setSearchResults: (state, action: PayloadAction<Product[]>) => {
+      return { ...state, searchResults: action.payload };
+    },
   },
 });
 
-export const { setProducts } = productSlice.actions;
+export const { setProducts, setSearchResults } = productSlice.actions;
 
 export default productSlice.reducer;
