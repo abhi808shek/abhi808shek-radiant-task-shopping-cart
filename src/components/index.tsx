@@ -66,7 +66,7 @@ const Navbar = () => {
                 key={order.id}
                 to={`/product/${order.id}`}
                 className="block px-4 py-2 hover:bg-gray-100 text-gray-900"
-                onClick={() => setSearchQuery("")} // Clear search on selection
+                onClick={() => setSearchQuery("")}
               >
                 {order.title} - ${order.price}
               </Link>
