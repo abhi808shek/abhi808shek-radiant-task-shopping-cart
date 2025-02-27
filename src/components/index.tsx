@@ -7,34 +7,25 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, User, LogOut, Search, Menu } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHook";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/hooks/reduxHook";
 import { customLocalStorage } from "@/utils/customLocalStorage";
-import { setCart } from "@/store/cart.reducer";
 
 const Navbar = () => {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const cartData = customLocalStorage.getData("cart");
-
-    // Ensure it's always an array
-    const previousCartList: any[] = cartData ? JSON.parse(cartData) : [];
-
-    if (!Array.isArray(previousCartList)) {
-      console.error("Invalid cart data detected in localStorage.");
-      return;
-    }
-
-    dispatch(setCart(previousCartList));
-  }, []);
+  const navigate = useNavigate(); // ✅ Use for redirection
 
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const { cart } = useAppSelector((state) => state.cart);
+
+  const handleLogout = () => {
+    customLocalStorage.deleteAllData();
+    navigate("/login");
+  };
+
   return (
     <nav className="flex items-center justify-between bg-white p-4 shadow-md relative">
       {/* Left - Logo */}
-      <Link to={"/"} className="text-xl font-bold text-gray-900">
+      <Link to="/" className="text-xl font-bold text-gray-900">
         Radiant Infonet
       </Link>
 
@@ -71,6 +62,7 @@ const Navbar = () => {
             <Button
               variant="ghost"
               className="w-full flex items-center gap-2 text-gray-900"
+              onClick={handleLogout} // ✅ Calls handleLogout on click
             >
               <LogOut className="h-5 w-5" />
               Logout
@@ -89,7 +81,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="absolute top-14 left-0 w-full bg-white shadow-md md:hidden flex flex-col items-center gap-4 p-4">
+        <div className="absolute top-14 left-0 w-full bg-white shadow-md md:hidden flex flex-col items-center gap-4 p-4 z-10">
           <div className="relative w-full">
             <Input
               type="text"
@@ -101,6 +93,7 @@ const Navbar = () => {
           <Button
             variant="ghost"
             className="w-full flex items-center gap-2 text-gray-900"
+            onClick={handleLogout} // ✅ Calls handleLogout on click
           >
             <LogOut className="h-5 w-5" />
             Logout

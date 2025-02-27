@@ -18,7 +18,7 @@ const ProductListing = () => {
   }, []);
   return (
     <div className="w-full px-4 py-4">
-      <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-4 text-center">
+      <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-4">
         Product Listing
       </h2>
 

@@ -46,7 +46,6 @@ export function LoginForm({
       const { token }: LoginResponse = response.data;
       console.log("response ", response);
 
-      // ✅ Store token securely in localStorage
       customLocalStorage.setData("token", token);
       toast.success("Login successful!");
       navigate("/");
