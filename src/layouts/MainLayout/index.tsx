@@ -5,7 +5,9 @@ const MainLayout = () => {
   return (
     <div className="flex flex-col w-full h-[100dvh]">
       <Navbar />
-      <Outlet />
+      <div className="relative top-[90px] md:top-[65px] ">
+        <Outlet />
+      </div>
     </div>
   );
 };
