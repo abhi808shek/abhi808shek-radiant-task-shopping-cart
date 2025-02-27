@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import toast from "react-hot-toast";
 // import { customLocalStorage } from "@/utils/customLocalStorage";
 
@@ -44,11 +44,11 @@ const orders: Order[] = [
     status: "Arriving Today",
   },
 ];
-useEffect(() => {
-  // const cartList = customLocalStorage.getData("cart");
-  // const parsedCartList: any[] = cartList ? JSON.parse(cartList) : [];
-  // dispatch(setCart(parsedCartList));
-}, []);
+// useEffect(() => {
+//   // const cartList = customLocalStorage.getData("cart");
+//   // const parsedCartList: any[] = cartList ? JSON.parse(cartList) : [];
+//   // dispatch(setCart(parsedCartList));
+// }, []);
 const OrderHistory: FC = () => {
   return (
     <div className="p-4 md:p-6 bg-gray-100 min-h-screen flex flex-col items-center">
