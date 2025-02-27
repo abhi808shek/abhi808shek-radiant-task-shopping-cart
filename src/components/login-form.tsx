@@ -1,5 +1,6 @@
 import { FormEvent, MouseEvent, useState } from "react";
-import { toast } from "react-hot-toast"; // ✅ Import react-hot-toast
+import { toast } from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react"; // 👁️ Import Lucide icons
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false); // 👁️ Toggle password visibility
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -97,16 +99,27 @@ export function LoginForm({
                   )}
                 </div>
 
-                {/* Password Input */}
-                <div className="grid gap-3">
+                {/* Password Input with Show/Hide Toggle */}
+                <div className="grid gap-3 relative">
                   <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={passwordError ? "border-red-500" : ""}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={passwordError ? "border-red-500" : ""}
+                    />
+                    {/* Show/Hide Icon */}
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                   {passwordError && (
                     <p className="text-red-500 text-sm">{passwordError}</p>
                   )}

@@ -32,9 +32,20 @@ const ProductListing = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
-        {searchResults?.map((product: any, index) => (
-          <ProductCard key={index} product={product} />
-        ))}
+        {!searchResults.length ? (
+          <div className="col-span-full flex flex-col items-center mt-10">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              No Products Found
+            </h2>
+            <p className="text-gray-600 mt-2">
+              Try adjusting your search or explore other categories.
+            </p>
+          </div>
+        ) : (
+          searchResults?.map((product: any, index) => (
+            <ProductCard key={index} product={product} />
+          ))
+        )}
       </div>
     </div>
   );

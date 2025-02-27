@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // If using React Router
-import { Button } from "@/components/ui/button"; // ShadCN UI (or replace with <button>)
+import { useParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { productbyId } from "@/services/apis/products.api";
 
@@ -44,10 +43,6 @@ const ProductDetail = () => {
                 ${product.price}
               </p>
             </div>
-
-            <Button className="w-full mt-6 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
-              Add to Cart
-            </Button>
           </div>
         </div>
       </Card>

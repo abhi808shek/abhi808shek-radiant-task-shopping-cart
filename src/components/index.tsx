@@ -28,7 +28,7 @@ const Navbar = () => {
   const dispatch = useAppDispatch();
   // Handle Logout
   const handleLogout = () => {
-    customLocalStorage.deleteAllData();
+    customLocalStorage.deleteData("token");
     navigate("/login");
   };
   return (
