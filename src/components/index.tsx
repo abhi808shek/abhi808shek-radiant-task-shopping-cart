@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -6,21 +6,53 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, User, LogOut, Search, Menu } from "lucide-react";
+import { ShoppingCart, User, LogOut, Search, Menu, Box } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/hooks/reduxHook";
 import { customLocalStorage } from "@/utils/customLocalStorage";
+import { searchOrders, Order } from "@/utils/customSearch";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+const orders: Order[] = [
+  { id: 1, title: "Product Testing", price: 110, quantity: 1 },
+  { id: 2, title: "Classic Black Hooded Sweatshirt", price: 79, quantity: 1 },
+  { id: 3, title: "Classic Comfort Fit Joggers", price: 25, quantity: 1 },
+  {
+    id: 4,
+    title: "Classic Comfort Drawstring Joggers",
+    price: 79,
+    quantity: 1,
+  },
+];
 
 const Navbar = () => {
   const navigate = useNavigate();
-  // const [searchQuery, setSearchQuery] = useState("");
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const { cart } = useAppSelector((state) => state.cart);
 
+  // State for search
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Order[]>([]);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+  // Handle Logout
   const handleLogout = () => {
     customLocalStorage.deleteAllData();
     navigate("/login");
   };
+
+  // Search Functionality
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setSearchResults([]);
+    } else {
+      setSearchResults(searchOrders(orders, searchQuery));
+    }
+  }, [searchQuery]);
 
   return (
     <nav className="flex items-center justify-between bg-white p-4 shadow-md relative">
@@ -29,27 +61,62 @@ const Navbar = () => {
         Radiant Infonet
       </Link>
 
-      {/* Center - Search Input (Hidden on Mobile) */}
+      {/* Center - Search Input */}
       <div className="hidden md:block relative w-full max-w-md md:w-1/3">
         <Input
           type="text"
           placeholder="Search products..."
           className="w-full rounded-lg border p-2 pl-10 text-gray-900"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" />
+
+        {/* Search Results Dropdown */}
+        {searchResults.length > 0 && (
+          <div className="absolute top-full mt-2 w-full bg-white border rounded-lg shadow-lg z-10">
+            {searchResults.map((order) => (
+              <Link
+                key={order.id}
+                to={`/product/${order.id}`}
+                className="block px-4 py-2 hover:bg-gray-100 text-gray-900"
+                onClick={() => setSearchQuery("")} // Clear search on selection
+              >
+                {order.title} - ${order.price}
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Right - Icons */}
       <div className="flex items-center gap-4">
-        {/* Cart Icon with Badge */}
-        <Link to="/cart" className="relative">
-          <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-gray-500" />
-          {cart.length > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-              {cart.length}
-            </span>
-          )}
-        </Link>
+        <TooltipProvider>
+          {/* Orders Icon */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/orders" className="relative">
+                <Box className="h-6 w-6 text-gray-700 hover:text-gray-500" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>Orders</TooltipContent>
+          </Tooltip>
+
+          {/* Cart Icon */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/cart" className="relative">
+                <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-gray-500" />
+                {cart.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {cart.length}
+                  </span>
+                )}
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>Cart</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         {/* User Profile Popover */}
         <Popover>
@@ -62,7 +129,7 @@ const Navbar = () => {
             <Button
               variant="ghost"
               className="w-full flex items-center gap-2 text-gray-900"
-              onClick={handleLogout} // ✅ Calls handleLogout on click
+              onClick={handleLogout}
             >
               <LogOut className="h-5 w-5" />
               Logout
@@ -87,13 +154,32 @@ const Navbar = () => {
               type="text"
               placeholder="Search products..."
               className="w-full rounded-lg border p-2 pl-10 text-gray-900"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" />
           </div>
+          {searchResults.length > 0 && (
+            <div className="w-full bg-white border rounded-lg shadow-lg mt-2">
+              {searchResults.map((order) => (
+                <Link
+                  key={order.id}
+                  to={`/product/${order.id}`}
+                  className="block px-4 py-2 hover:bg-gray-100 text-gray-900"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setMenuOpen(false);
+                  }}
+                >
+                  {order.title} - ${order.price}
+                </Link>
+              ))}
+            </div>
+          )}
           <Button
             variant="ghost"
             className="w-full flex items-center gap-2 text-gray-900"
-            onClick={handleLogout} // ✅ Calls handleLogout on click
+            onClick={handleLogout}
           >
             <LogOut className="h-5 w-5" />
             Logout
