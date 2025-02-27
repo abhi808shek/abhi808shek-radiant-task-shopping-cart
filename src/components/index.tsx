@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -12,8 +12,8 @@ import { useAppSelector } from "@/hooks/reduxHook";
 import { customLocalStorage } from "@/utils/customLocalStorage";
 
 const Navbar = () => {
-  const navigate = useNavigate(); // ✅ Use for redirection
-
+  const navigate = useNavigate();
+  // const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const { cart } = useAppSelector((state) => state.cart);
 

@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FC, useEffect } from "react";
 import toast from "react-hot-toast";
-import { customLocalStorage } from "@/utils/customLocalStorage";
+// import { customLocalStorage } from "@/utils/customLocalStorage";
 
 // Define Order Type
 type Order = {
@@ -45,8 +45,8 @@ const orders: Order[] = [
   },
 ];
 useEffect(() => {
-  const cartList = customLocalStorage.getData("cart");
-  const parsedCartList: any[] = cartList ? JSON.parse(cartList) : [];
+  // const cartList = customLocalStorage.getData("cart");
+  // const parsedCartList: any[] = cartList ? JSON.parse(cartList) : [];
   // dispatch(setCart(parsedCartList));
 }, []);
 const OrderHistory: FC = () => {
