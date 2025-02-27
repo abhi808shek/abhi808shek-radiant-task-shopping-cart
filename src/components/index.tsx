@@ -10,7 +10,7 @@ import { ShoppingCart, User, LogOut, Search, Menu, Box } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/hooks/reduxHook";
 import { customLocalStorage } from "@/utils/customLocalStorage";
-import { searchOrders, Order } from "@/utils/customSearch";
+import { Order } from "@/utils/customSearch";
 import {
   Tooltip,
   TooltipContent,
@@ -18,23 +18,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const orders: Order[] = [
-  { id: 1, title: "Product Testing", price: 110, quantity: 1 },
-  { id: 2, title: "Classic Black Hooded Sweatshirt", price: 79, quantity: 1 },
-  { id: 3, title: "Classic Comfort Fit Joggers", price: 25, quantity: 1 },
-  {
-    id: 4,
-    title: "Classic Comfort Drawstring Joggers",
-    price: 79,
-    quantity: 1,
-  },
-];
-
 const Navbar = () => {
   const navigate = useNavigate();
   const { cart } = useAppSelector((state) => state.cart);
-
-  // State for search
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Order[]>([]);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -50,7 +36,7 @@ const Navbar = () => {
     if (searchQuery.trim() === "") {
       setSearchResults([]);
     } else {
-      setSearchResults(searchOrders(orders, searchQuery));
+      // setSearchResults(searchOrders(orders, searchQuery));
     }
   }, [searchQuery]);
 
