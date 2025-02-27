@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -8,40 +8,31 @@ import {
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, User, LogOut, Search, Menu, Box } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppSelector } from "@/hooks/reduxHook";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHook";
 import { customLocalStorage } from "@/utils/customLocalStorage";
-import { Order } from "@/utils/customSearch";
+import { searchOrders } from "@/utils/customSearch";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { setSearchResults } from "@/store/product.reducer";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { cart } = useAppSelector((state) => state.cart);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Order[]>([]);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
+  const { productsList } = useAppSelector((state) => state.products);
+  const dispatch = useAppDispatch();
   // Handle Logout
   const handleLogout = () => {
     customLocalStorage.deleteAllData();
     navigate("/login");
   };
-
-  // Search Functionality
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setSearchResults([]);
-    } else {
-      // setSearchResults(searchOrders(orders, searchQuery));
-    }
-  }, [searchQuery]);
-
   return (
-    <nav className="flex items-center justify-between bg-white p-4 shadow-md relative">
+    <nav className="flex items-center justify-between bg-white p-4 shadow-md fixed top-0 w-full z-10">
       {/* Left - Logo */}
       <Link to="/" className="text-xl font-bold text-gray-900">
         Radiant Infonet
@@ -54,25 +45,13 @@ const Navbar = () => {
           placeholder="Search products..."
           className="w-full rounded-lg border p-2 pl-10 text-gray-900"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            const result: any = searchOrders(productsList, e.target.value);
+            dispatch(setSearchResults(result));
+          }}
         />
         <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" />
-
-        {/* Search Results Dropdown */}
-        {searchResults.length > 0 && (
-          <div className="absolute top-full mt-2 w-full bg-white border rounded-lg shadow-lg z-10">
-            {searchResults.map((order) => (
-              <Link
-                key={order.id}
-                to={`/product/${order.id}`}
-                className="block px-4 py-2 hover:bg-gray-100 text-gray-900"
-                onClick={() => setSearchQuery("")}
-              >
-                {order.title} - ${order.price}
-              </Link>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Right - Icons */}
@@ -145,23 +124,7 @@ const Navbar = () => {
             />
             <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" />
           </div>
-          {searchResults.length > 0 && (
-            <div className="w-full bg-white border rounded-lg shadow-lg mt-2">
-              {searchResults.map((order) => (
-                <Link
-                  key={order.id}
-                  to={`/product/${order.id}`}
-                  className="block px-4 py-2 hover:bg-gray-100 text-gray-900"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setMenuOpen(false);
-                  }}
-                >
-                  {order.title} - ${order.price}
-                </Link>
-              ))}
-            </div>
-          )}
+
           <Button
             variant="ghost"
             className="w-full flex items-center gap-2 text-gray-900"
