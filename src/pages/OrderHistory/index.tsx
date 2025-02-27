@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { customLocalStorage } from "@/utils/customLocalStorage";
 
 // Define Order Type
 type Order = {
@@ -12,39 +13,13 @@ type Order = {
   status: "Arriving Today" | "Delivered" | `Delivered by ${string}`;
 };
 
-// Sample order data
-const orders: Order[] = [
-  {
-    id: 1,
-    title: "Product Testing",
-    price: 110,
-    quantity: 1,
-    status: "Arriving Today",
-  },
-  {
-    id: 2,
-    title: "Classic Black Hooded Sweatshirt",
-    price: 79,
-    quantity: 1,
-    status: "Delivered",
-  },
-  {
-    id: 3,
-    title: "Classic Comfort Fit Joggers",
-    price: 25,
-    quantity: 1,
-    status: "Delivered by Feb 28",
-  },
-  {
-    id: 4,
-    title: "Classic Comfort Drawstring Joggers",
-    price: 79,
-    quantity: 1,
-    status: "Arriving Today",
-  },
-];
-
 const OrderHistory: FC = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  useEffect(() => {
+    const cartList = customLocalStorage.getData("orders");
+    const parsedOrderedList: any[] = cartList ? JSON.parse(cartList) : [];
+    setOrders(parsedOrderedList);
+  }, []);
   return (
     <div className="p-4 md:p-6 bg-gray-100 min-h-screen flex flex-col items-center">
       <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-start">

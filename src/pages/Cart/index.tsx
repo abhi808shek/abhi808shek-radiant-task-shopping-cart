@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHook";
 import { setCart } from "@/store/cart.reducer";
+import { hideLoader, showLoader } from "@/store/global.reducer";
 import { customLocalStorage } from "@/utils/customLocalStorage";
 import { Minus, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -42,17 +43,40 @@ const Cart = () => {
   }, []);
 
   const handleCheckout = () => {
+    dispatch(showLoader());
+
     setTimeout(() => {
+      dispatch(hideLoader());
       setIsModalOpen(true);
     }, 3000);
   };
 
-  // Close Modal & Navigate
   const closeModalAndNavigate = () => {
     setIsModalOpen(false);
+
+    const existingOrders = JSON.parse(
+      customLocalStorage.getData("orders") || "[]"
+    );
+    const newOrders = cart.map((item, index) => ({
+      ...item,
+      status: getStatusByIndex(index),
+    }));
+    const updatedOrders = [...existingOrders, ...newOrders];
+    customLocalStorage.setData("orders", JSON.stringify(updatedOrders));
     dispatch(setCart([]));
     customLocalStorage.setData("cart", JSON.stringify([]));
     navigate("/orders");
+  };
+
+  // Function to return a status based on index
+  const getStatusByIndex = (index: number) => {
+    const statuses = [
+      "Arriving Today",
+      "Delivered",
+      "Delivered by Feb 28",
+      "Arriving Today",
+    ];
+    return statuses[index % statuses.length];
   };
 
   return (
