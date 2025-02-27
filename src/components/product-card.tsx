@@ -9,6 +9,7 @@ type PRODUCT_TYPE = {
   images: string[];
   description: string;
   price: number;
+  title: string;
 };
 
 type PROP_TYPE = {
@@ -57,6 +58,7 @@ const ProductCard = ({ product }: PROP_TYPE) => {
         />
 
         <div className="px-5 pb-5">
+          <h1 className="font-bold">{product?.title}</h1>
           <h5 className="text-md font-semibold tracking-tight text-gray-900">
             {product.description.slice(0, 100)}...
           </h5>
@@ -65,7 +67,7 @@ const ProductCard = ({ product }: PROP_TYPE) => {
               ${product.price}
             </span>
             <button
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
               onClick={(event) => addToCart(event, product)}
             >
               Add to cart
