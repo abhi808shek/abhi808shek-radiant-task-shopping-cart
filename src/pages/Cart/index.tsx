@@ -4,13 +4,15 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHook";
 import { setCart } from "@/store/cart.reducer";
 import { customLocalStorage } from "@/utils/customLocalStorage";
 import { Minus, Plus, Trash } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { cart } = useAppSelector((state) => state.cart);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Update Quantity
   const updateQuantity = (id: number, amount: number) => {
@@ -39,10 +41,24 @@ const Cart = () => {
     dispatch(setCart(parsedCartList));
   }, []);
 
+  const handleCheckout = () => {
+    setTimeout(() => {
+      setIsModalOpen(true);
+    }, 3000);
+  };
+
+  // Close Modal & Navigate
+  const closeModalAndNavigate = () => {
+    setIsModalOpen(false);
+    dispatch(setCart([]));
+    customLocalStorage.setData("cart", JSON.stringify([]));
+    navigate("/orders");
+  };
+
   return (
-    <div className="p-4 md:p-6 bg-gray-100 min-h-screen flex flex-col items-center ">
+    <div className="p-4 md:p-6 bg-gray-100 min-h-screen flex flex-col items-center">
       {cart.length === 0 ? (
-        <div className=" flex flex-col items-center ">
+        <div className="flex flex-col items-center">
           <h2 className="text-2xl font-semibold text-gray-900">
             Your Cart is Empty
           </h2>
@@ -118,10 +134,31 @@ const Cart = () => {
             <p className="flex justify-between text-xl font-semibold">
               <span>Total:</span> <span>${total}</span>
             </p>
-            <Button className="w-full mt-4 bg-blue-600 text-white cursor-pointer">
+            <Button
+              className="w-full mt-4 bg-blue-600 text-white cursor-pointer"
+              onClick={handleCheckout}
+            >
               Buy now
             </Button>
           </Card>
+        </div>
+      )}
+
+      {/* Order Success Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-30 backdrop-blur-md">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center w-96">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Order Placed Successfully
+            </h2>
+            <p className="text-gray-600 mt-2">Thank you for your purchase!</p>
+            <Button
+              className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg cursor-pointer"
+              onClick={closeModalAndNavigate}
+            >
+              OK
+            </Button>
+          </div>
         </div>
       )}
     </div>

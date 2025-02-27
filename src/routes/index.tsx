@@ -6,6 +6,7 @@ import PrivateRoutes from "./Private";
 import Login from "@/pages/Login";
 import PublicRoutes from "./Public";
 import ProductDetail from "@/components/product";
+import OrderHistory from "@/pages/OrderHistory";
 
 const Routing = () => {
   return (
@@ -21,6 +22,7 @@ const Routing = () => {
           <Route path={"/"} element={<ProductListing />} />
           <Route path={"/:id"} element={<ProductDetail />} />
           <Route path={"/cart"} element={<Cart />} />
+          <Route path={"/orders"} element={<OrderHistory />} />
         </Route>
       </Route>
     </Routes>
