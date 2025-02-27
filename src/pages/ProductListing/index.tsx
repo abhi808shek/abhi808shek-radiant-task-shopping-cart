@@ -1,17 +1,20 @@
 import ProductCard from "@/components/product-card";
+import { useAppSelector } from "@/hooks/reduxHook";
 import { products } from "@/services/apis/products.api";
 import { hideLoader, showLoader } from "@/store/global.reducer";
-import { useEffect, useState } from "react";
+import { setProducts, setSearchResults } from "@/store/product.reducer";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 const ProductListing = () => {
-  const [productList, setProductList] = useState([]);
+  const { searchResults } = useAppSelector((state) => state.products);
   const dispatch = useDispatch();
   const onHandleProductList = async () => {
     try {
       dispatch(showLoader());
       const result = await products();
-      setProductList(result?.data);
+      dispatch(setProducts(result?.data));
+      dispatch(setSearchResults(result?.data));
     } catch (error) {
       console.log(error);
     } finally {
@@ -29,7 +32,7 @@ const ProductListing = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
-        {productList.map((product, index) => (
+        {searchResults?.map((product: any, index) => (
           <ProductCard key={index} product={product} />
         ))}
       </div>
